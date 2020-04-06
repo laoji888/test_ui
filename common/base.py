@@ -1,4 +1,6 @@
 import datetime
+
+import pymysql
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -225,6 +227,55 @@ class base():
             return True
         except:
             return False
+
+    def switch_to_window(self, num=0):
+        """切换至某一页面(句柄)
+        Agrs:
+         - num - 选择页面
+         第一个页面的num值为0
+         #默认切换至第一页
+        Usage:
+         self.switch_to_window(1)
+        """
+        handles = self.driver.window_handles
+        self.driver.switch_to.window(handles[num])
+        self.log.info('跳转浏览器页面')
+
+    def link_sql(self, selector, sentence):
+        """调取数据库及查询
+        Agrs:
+        - host - 数据库地址
+        - user - 数据库登录用户名称
+        - pw - 数据库登录用户密码
+        - db - 数据库中库的名称
+        - charset - 数据库中库的字符集
+        - sentence - 对数据的select语句
+        Usage:
+         self.link_sql(self.["localhost", "root", "password", "world2", "utf8"], "SELECT title FROM article where id =1")
+        """
+        try:
+            host = selector[0]
+            user = selector[1]
+            pw = selector[2]
+            db = selector[3]
+            charset = selector[4]
+            db = pymysql.connect(host=host,
+                                 port=3306,
+                                 user=user,
+                                 passwd=pw,
+                                 db=db,
+                                 charset=charset)
+            self.log.info('已链接数据库')
+        except Exception:
+            raise Exception(self.log.error('链接数据库内容出错'))
+        else:
+            cursor = db.cursor(pymysql.cursors.DictCursor)  # cursor() 方法获取操作游标
+            sql = sentence
+            cursor.execute(sql)  # 执行SQL语句
+            self.log.info('执行SQL语句')
+            results = cursor.fetchall()  # 获取所有记录列表
+            self.log.info('返回查询结果，请赋值')
+            return results
 
 
 if __name__ == '__main__':
