@@ -4,8 +4,8 @@ case/__pycache__/
 common/__pycache__/
 page/__pycache__/
 #report_api/*.html
-#report_ui/*.html
-error_imgs/*.png
+
+
 *.log
 
 

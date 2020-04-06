@@ -1,5 +1,5 @@
 from selenium import webdriver
-from common.ui_base import base
+from common.base import base
 from time import sleep
 
 
